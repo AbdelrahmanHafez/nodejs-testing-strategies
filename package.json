@@ -1,0 +1,9 @@
+{
+  "name": "testing-startegies",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "license": "ISC"
+}
