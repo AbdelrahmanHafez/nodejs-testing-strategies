@@ -1,20 +1,21 @@
-const Emitter = require('events');
+const { EventEmitter } = require('events');
 const util = require('util');
 
-class ReviewProcess extends Emitter {
-  constructor (args) {
+class ReviewProcess extends EventEmitter {
+  constructor (...args) {
+    super(...args);
     this.callback = null;
     this.on('application-received', this.validateApp);
     this.on('validated', this.findNextMission);
     this.on('mission-selected', this.roleIsAvailable);
     this.on('role-available', this.ensureRoleCompatible);
     this.on('role-compatible', this.acceptApplication);
-
     this.on('invalid', this.denyApplication);
   }
 
   validateApp (app) {
-    if (this.isValid()) this.emit('validated', app);
+    console.log('runs');
+    if (app.isValid()) this.emit('validated', app);
     else this.emit('invalid', app.getValidationMesage());
   }
 
@@ -48,6 +49,9 @@ class ReviewProcess extends Emitter {
   }
 
   processApplication (app, next) {
+    this.callback = next;
     this.emit('application-received', app);
   }
 }
+
+module.exports = ReviewProcess;
