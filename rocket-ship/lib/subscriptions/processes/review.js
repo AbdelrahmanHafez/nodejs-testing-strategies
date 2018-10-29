@@ -1,56 +1,51 @@
-const { EventEmitter } = require('events');
-const util = require('util');
-
-class ReviewProcess extends EventEmitter {
-  constructor (...args) {
-    super(...args);
+const assert = require('assert');
+const async = require('async');
+class ReviewProcess {
+  constructor (args) {
+    assert(args.app, 'Needs an application to review.');
     this.callback = null;
-    this.on('application-received', this.validateApp);
-    this.on('validated', this.findNextMission);
-    this.on('mission-selected', this.roleIsAvailable);
-    this.on('role-available', this.ensureRoleCompatible);
-    this.on('role-compatible', this.acceptApplication);
-    this.on('invalid', this.denyApplication);
+    this.app = args.app;
   }
 
-  validateApp (app) {
-    console.log('runs');
-    if (app.isValid()) this.emit('validated', app);
-    else this.emit('invalid', app.getValidationMesage());
+  validateApp (next) {
+    if (this.app.isValid()) next(null, true);
+    else next(this.app.getValidationMesage(), null);
   }
 
-  findNextMission (app) {
-    app.mission = {
+  findNextMission (next) {
+    const mission = {
       commander: null,
       pilot: null,
       MAVPilot: null,
       passengers: []
     };
-    this.emit('mission-selected', app);
+    next(null, mission);
   }
 
-  roleIsAvailable (app) {
-    this.emit('role-available', app);
+  roleIsAvailable (next) {
+    next(null, true);
   }
 
-  ensureRoleCompatible (app) {
-    this.emit('role-compatible', app);
+  ensureRoleCompatible (next) {
+    next(null, true);
   }
 
-  acceptApplication (app) {
-    this.callback(null, {
-      success: true,
-      message: 'Welcome to the Mars Program!'
+  approveApplication (next) {
+    next(null, true);
+  }
+
+  processApplication (next) {
+    const self = this;
+    async.series({
+      validated: this.validateApp.bind(self),
+      mission: this.findNextMission.bind(self),
+      roleAvailable: this.roleIsAvailable.bind(self),
+      roleCompatible: this.ensureRoleCompatible.bind(self),
+      success: this.approveApplication.bind(self)
+    }, function (err, result) {
+      if (err) return next(null, { success: false, message: err });
+      next(null, result);
     });
-  }
-
-  denyApplication (message) {
-    this.callback(null, { success: false, message });
-  }
-
-  processApplication (app, next) {
-    this.callback = next;
-    this.emit('application-received', app);
   }
 }
 

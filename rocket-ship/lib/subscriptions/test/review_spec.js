@@ -14,11 +14,16 @@ describe('The Review Process', () => {
       height: 66,
       weight: 180
     });
-    const review = new ReviewProcess(validApp);
-    const spy = sinon.spy();
+    const review = new ReviewProcess({ app: validApp });
+
+    sinon.spy(review, 'validateApp');
+    sinon.spy(review, 'findNextMission');
+    sinon.spy(review, 'roleIsAvailable');
+    sinon.spy(review, 'ensureRoleCompatible');
+    sinon.spy(review, 'processApplication');
+
     before((done) => {
-      review.on('validated', spy);
-      review.processApplication(validApp, (err, result) => {
+      review.processApplication((err, result) => {
         decision = result;
         done();
       });
@@ -29,7 +34,19 @@ describe('The Review Process', () => {
     });
 
     it('validates app', () => {
-      assert(spy.called);
+      assert(review.validateApp.called);
+    });
+
+    it('finds next mission', () => {
+      assert(review.validateApp.called);
+    });
+
+    it('verifies if role is available', () => {
+      assert(review.roleIsAvailable.called);
+    });
+
+    it('ensures role compatibility', () => {
+      assert(review.ensureRoleCompatible.called);
     });
   });
 });
