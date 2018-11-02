@@ -1,7 +1,9 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const MissionControl = require('../models/mission_control');
-const db = require('../db');
+const DB = require('../db');
+
+const db = new DB();
 
 sinon.stub(db, 'getMissionByLaunchDate').yields(null, null);
 sinon.stub(db, 'createNewMission').yields(null, new MissionControl({ db }));

@@ -2,11 +2,12 @@ const assert = require('assert');
 const sinon = require('sinon');
 const ReviewProcess = require('../processes/review');
 const Helper = require('./helpers/index');
-const db = require('../db');
+const DB = require('../db');
 
 describe('The Review Process', () => {
   describe('Receiving a valid application', () => {
     let decision;
+    const db = new DB();
     const validApp = Helper.validApplication;
     const review = new ReviewProcess({ app: validApp, db });
 
