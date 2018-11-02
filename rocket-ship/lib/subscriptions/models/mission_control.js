@@ -3,7 +3,7 @@ const moment = require('moment');
 const Mission = require('./mission');
 
 class MissionControl {
-  constructor (args) {
+  constructor (args = {}) {
     assert(args.db, 'Needs a DB instance');
     this.db = args.db;
   }
@@ -13,12 +13,13 @@ class MissionControl {
     const formattedMissionDate = nextMission.format('YYYY/MM/DD');
     const self = this;
 
-    this.db.find({ launchDate: formattedMissionDate }, function (err, foundMission) {
+    this.db.getMissionByLaunchDate(formattedMissionDate, function (err, foundMission) {
       assert.ok(err === null, err);
 
-      if (foundMission) return next(null, new Mission(foundMission));
+      if (foundMission) return next(null, foundMission);
+
       const newMission = new Mission();
-      self.db.insert(newMission, function (err, result) {
+      self.db.createNewMission(newMission, function (err, result) {
         next(err, newMission);
       });
     });

@@ -1,25 +1,15 @@
 const assert = require('assert');
 const MembershipApplication = require('../models/membership_application');
-
+const Helper = require('./helpers');
 describe('Membership application requirements', () => {
   describe('Application valid if...', () => {
-    let validApp;
-
-    before(() => {
-      validApp = new MembershipApplication({
-        first: 'Abdelrahman',
-        last: 'Hafez',
-        email: 'a.hafez852@gmail.com',
-        age: 24,
-        height: 66,
-        weight: 180
-      });
-    });
+    const validApp = Helper.validApplication;
 
     it('all validators successful', () => {
       assert(validApp.isValid(), 'Not valid.');
     });
   });
+
   describe('Application invalid if...', () => {
     it('is expired', () => {
       const app = new MembershipApplication({ validUntil: '2018/10/18' });

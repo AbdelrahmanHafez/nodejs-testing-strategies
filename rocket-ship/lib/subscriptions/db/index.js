@@ -1,17 +1,9 @@
 module.exports = {
-  find (args, next) {
+  getMissionByLaunchDate (formattedMissionDate, next) {
 
   },
 
-  insert (args, next) {
-
-  },
-
-  update (args, next) {
-
-  },
-
-  destory (args, next) {
+  createNewMission (mission, next) {
 
   }
 };

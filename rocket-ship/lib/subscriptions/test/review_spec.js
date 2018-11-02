@@ -1,20 +1,14 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const ReviewProcess = require('../processes/review');
-const MembershipApplication = require('../models/membership_application');
+const Helper = require('./helpers/index');
+const db = require('../db');
 
 describe('The Review Process', () => {
   describe('Receiving a valid application', () => {
     let decision;
-    const validApp = new MembershipApplication({
-      first: 'Abdelrahman',
-      last: 'Hafez',
-      email: 'a.hafez852@gmail.com',
-      age: 24,
-      height: 66,
-      weight: 180
-    });
-    const review = new ReviewProcess({ app: validApp });
+    const validApp = Helper.validApplication;
+    const review = new ReviewProcess({ app: validApp, db });
 
     sinon.spy(review, 'validateApp');
     sinon.spy(review, 'findNextMission');

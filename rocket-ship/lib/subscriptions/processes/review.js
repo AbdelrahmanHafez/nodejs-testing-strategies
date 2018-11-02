@@ -1,10 +1,13 @@
 const assert = require('assert');
 const async = require('async');
+const MissionControl = require('../models/mission_control');
 class ReviewProcess {
   constructor (args) {
     assert(args.app, 'Needs an application to review.');
     this.callback = null;
     this.app = args.app;
+    this.db = args.db;
+    this.missionControl = new MissionControl({ db: this.db });
   }
 
   validateApp (next) {
