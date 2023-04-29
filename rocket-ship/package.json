@@ -13,6 +13,6 @@
     "sinon": "^7.0.0"
   },
   "dependencies": {
-    "moment": "^2.29.2"
+    "moment": "^2.29.4"
   }
 }
